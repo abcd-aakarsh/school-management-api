@@ -1,11 +1,8 @@
 export const validate = (schema, source = "body") => {
   return (req, res, next) => {
     try {
-      if (source === "query" || source === "params") {
-        req[source] = { ...req[source] };
-      }
       const data = schema.parse(req[source]);
-      req[source] = data;
+      req.validated=data;
 
       next();
     } catch (error) {
