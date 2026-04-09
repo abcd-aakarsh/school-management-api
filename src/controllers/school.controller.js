@@ -5,7 +5,7 @@ import { calculateDistance } from "../utils/distance.js";
 //addSchool
 export const addSchool = async (req, res) => {
   try {
-    const id = await createSchool(req.body);
+    const id = await createSchool(req.validated);
 
     res.status(201).json({
       success: true,
@@ -23,31 +23,15 @@ export const addSchool = async (req, res) => {
 //listSchools
 export const listSchools = async (req, res) => {
   try {
-    const { latitude, longitude } = req.query;
+    const { latitude, longitude } = req.validated;
 
-    const userLat = latitude;
-    const userLng = longitude;
-
-    if (
-      isNaN(userLat) ||
-      isNaN(userLng) ||
-      userLat < -90 ||
-      userLat > 90 ||
-      userLng < -180 ||
-      userLng > 180
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid latitude or longitude",
-      });
-    }
 
     const schools = await getAllSchools();
 
     const schoolsWithDistance = schools.map((school) => {
       const distance = calculateDistance(
-        userLat,
-        userLng,
+        latitude,
+        longitude,
         school.latitude,
         school.longitude,
       );
